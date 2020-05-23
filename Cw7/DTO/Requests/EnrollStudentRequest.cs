@@ -13,5 +13,7 @@ namespace Cw7.DTO.Requests
         [Required] [MaxLength(100)] public string LastName { get; set; }
         [Required] public DateTime BirthDate { get; set; }
         [Required] [MaxLength(100)] public string Studies { get; set; }
+        [Required] [MaxLength(100)] public string Password { get; set; }
+
     }
 }

@@ -57,12 +57,15 @@ namespace Cw7.Services
                 }
                 dr.Close();
                 com.Parameters.Clear();
-                com.CommandText = "INSERT INTO StudentAPBD(IndexNumber,FirstName,LastName,BirthDate,IdEnrollment) VALUES(@index,@fname,@lname,@bdate,@idenrollment)";
+                com.CommandText = "INSERT INTO StudentAPBD(IndexNumber,FirstName,LastName,BirthDate,IdEnrollment,pswd,salt) VALUES(@index,@fname,@lname,@bdate,@idenrollment,@pswd,@salt)";
                 com.Parameters.AddWithValue("index", request.IndexNumber);
                 com.Parameters.AddWithValue("fname", request.FirstName);
                 com.Parameters.AddWithValue("lname", request.LastName);
                 com.Parameters.AddWithValue("bdate", request.BirthDate);
                 com.Parameters.AddWithValue("idenrollment", response.IdEnrollment);
+                var salt = PasswordHelper.CreateSalt();
+                com.Parameters.AddWithValue("pswd",PasswordHelper.GenerateSaltedHash(request.Password,salt));
+                com.Parameters.AddWithValue("salt",salt);
                 try
                 {
                     dr = com.ExecuteReader();

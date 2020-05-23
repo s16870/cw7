@@ -26,5 +26,12 @@ namespace Cw7.Services
             using var pbkdf2 = new Rfc2898DeriveBytes(pswd, salt, 20000);
             return pbkdf2.GetBytes(32);
         }
+        public static byte[] CreateSalt()
+        {
+            var randomNumberGenerator = new RNGCryptoServiceProvider();
+            var salt = new byte[32];
+            randomNumberGenerator.GetBytes(salt);
+            return salt;
+        }
     }
 }

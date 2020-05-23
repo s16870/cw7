@@ -109,14 +109,14 @@ namespace Cw7.Services
                     var newRefreshToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
                     com.Parameters.Clear();
                     com.CommandText = "UPDATE StudentAPBD SET refreshToken = @refreshToken WHERE IndexNumber = @index";
-                    com.Parameters.AddWithValue("refreshToken", refreshToken);
+                    com.Parameters.AddWithValue("refreshToken", newRefreshToken);
                     com.Parameters.AddWithValue("index", index);
                     com.ExecuteNonQuery();
 
                     return new JwtResponse
                     {
                         Token = new JwtSecurityTokenHandler().WriteToken(token),
-                        RefreshToken = refreshToken
+                        RefreshToken = newRefreshToken
                     };
                 }
                 else
