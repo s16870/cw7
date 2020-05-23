@@ -1,0 +1,36 @@
+﻿--use s16870	
+ALTER PROCEDURE PromoteStudents @Studies NVARCHAR(100), @Semester INT
+AS
+BEGIN
+	SET XACT_ABORT ON;
+    BEGIN
+        TRANSACTION trans;
+    DECLARE @IdStudies INT = (SELECT TOP 1 IdStudy FROM Studies WHERE Name = @Studies);
+    IF @IdStudies IS NULL
+        BEGIN
+            ROLLBACK;
+            RAISERROR ('404 Studies Not Found',1,1);
+            RETURN;
+        END
+
+    DECLARE @IdEnrollment INT = (SELECT TOP 1 IdEnrollment FROM Enrollment WHERE Semester = @Semester AND IdStudy = @IdStudies);
+    IF @IdEnrollment IS NULL
+        BEGIN
+            ROLLBACK;
+            RAISERROR ('404 Enrollment Not Found', 1, 1);
+            RETURN;
+        END
+
+    DECLARE @IdEnrollmentPromotion INT = (SELECT TOP 1 IdEnrollment FROM Enrollment WHERE Semester = (@Semester + 1));
+    IF @IdEnrollmentPromotion IS NULL
+        BEGIN
+			DECLARE @MaxIdEnrollment INT = (SELECT MAX(IdEnrollment) FROM Enrollment) + 1;
+            INSERT INTO Enrollment(IdEnrollment, Semester, IdStudy, StartDate)
+            VALUES (@MaxIdEnrollment, @Semester + 1, @IdStudies, GETDATE());
+			SET @IdEnrollmentPromotion = @MaxIdEnrollment;
+        END
+        
+    UPDATE StudentAPBD SET IdEnrollment = @IdEnrollmentPromotion WHERE IdEnrollment = @IdEnrollment
+    COMMIT;
+    SELECT * FROM Enrollment WHERE IdEnrollment = @IdEnrollmentPromotion;
+END

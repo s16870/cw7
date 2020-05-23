@@ -1,0 +1,28 @@
+﻿CREATE TABLE Studies(
+	IdStudy int NOT NULL,
+	Name nvarchar(100),
+	PRIMARY KEY(IdStudy)
+);
+CREATE TABLE StudentAPBD(
+	IndexNumber nvarchar(100),
+	FirstName nvarchar(100),
+	LastName nvarchar(100),
+	BirthDate date,
+	IdEnrollment int,
+	pswd nvarcahr(100),
+	refreshToken nvarchar(100),
+	salt varbinary(32),
+	PRIMARY KEY(IndexNumber)
+);
+
+CREATE TABLE ENROLLMENT(
+	IdEnrollment int,
+	Semester int,
+	IdStudy int,
+	StartDate date,
+	PRIMARY KEY(IdEnrollment),
+	FOREIGN KEY (IdStudy) REFERENCES Studies(IdStudy)
+);
+
+ALTER TABLE StudentAPBD
+ADD FOREIGN KEY (IdEnrollment) REFERENCES ENROLLMENT(IdEnrollment)
